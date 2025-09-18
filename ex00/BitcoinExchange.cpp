@@ -1,5 +1,20 @@
 #include "BitcoinExchange.hpp"
 
+BitcoinExchange::BitcoinExchange() {
+    getData(_map);
+}
+
+BitcoinExchange::BitcoinExchange(const BitcoinExchange& other) : _map(other._map) {}
+
+BitcoinExchange& BitcoinExchange::operator=(const BitcoinExchange& other) {
+    if (this != &other) {
+        _map = other._map;
+    }
+    return *this;
+}
+
+BitcoinExchange::~BitcoinExchange() {}
+
 bool leapYear(int year) {
     return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
 }
@@ -39,7 +54,7 @@ bool validateValue(const float value){
     return true;
 }
 
-void getData(std::map <std::string,float>* _db)
+void BitcoinExchange::getData(std::map <std::string,float> &_map)
 {
     std::ifstream  data("data.csv");
     if (!data.is_open()){
@@ -52,7 +67,7 @@ void getData(std::map <std::string,float>* _db)
     while (getline(data, line)){
         std::string date = line.substr(0, line.find(','));
         std::string amount = line.substr(line.find(',')+1, line.length());
-        _db->operator[](date) = atof(amount.c_str());
+        _map.operator[](date) = atof(amount.c_str());
     }
     data.close();
 }
@@ -63,17 +78,17 @@ bool toFloat(const std::string &s, float &result) {
     return !iss.fail() && iss.eof();
 }
 
-float obtainValue(std::string date, std::map <std::string,float> _db)
+float obtainValue(std::string date, std::map <std::string,float> _map)
 {
-    if (_db.empty()){
+    if (_map.empty()){
         return -1;
     }
-    std::map<std::string, float>::const_iterator it = _db.lower_bound(date);//upper no me da justo la fecha
+    std::map<std::string, float>::const_iterator it = _map.lower_bound(date);//upper no me da justo la fecha
 
-    if (it != _db.end() && it->first == date){
+    if (it != _map.end() && it->first == date){
         return it->second;
     }
-    else if (it == _db.begin())
+    else if (it == _map.begin())
         return -1;
     else {
         --it;
@@ -81,7 +96,7 @@ float obtainValue(std::string date, std::map <std::string,float> _db)
     }
 }
 
-void BitcoinExchange(char *input)
+void BitcoinExchange::giveBitcoin(char *input)
 {
     std::ifstream file(input);
     if (!file.is_open()){
@@ -89,8 +104,6 @@ void BitcoinExchange(char *input)
         return;
     }
     std::map <std::string,float> _idb;
-    std::map <std::string,float> _db;
-    getData(&_db);
     std::string line;
     if (!getline(file, line) || line.compare("date | value"))
     {
@@ -125,7 +138,7 @@ void BitcoinExchange(char *input)
                 continue;
             }
             _idb[date] = value_float;
-            float   bitcoinValue = obtainValue(date,_db);
+            float   bitcoinValue = obtainValue(date,_map);
             if (bitcoinValue == -1){
                 std::cerr << "Error: not bitcoin value in date " << date << std::endl;
                 continue;

@@ -7,18 +7,17 @@
 #include <sstream>
 #include <cstdlib>
 
-// class BitcoinExchange
-// {
-//     public: 
-//         BitcoinExchange();
-//         BitcoinExchange& operator=(const BitcoinExchange& other);
-//         BitcoinExchange(const BitcoinExchange& copy);
-//         ~BitcoinExchange();
-//         void BitcoinExchange (char *input);
-//     private:
-//         std::map <std::string, float> _db;
-// };
-
-void BitcoinExchange (char *input);
+class BitcoinExchange
+{
+    public: 
+        BitcoinExchange();
+        BitcoinExchange& operator=(const BitcoinExchange& other);
+        BitcoinExchange(const BitcoinExchange& copy);
+        ~BitcoinExchange();
+        void giveBitcoin (char *input);
+        void getData(std::map <std::string,float> &_map);
+    private:
+        std::map <std::string, float> _map;
+};
 
 #endif

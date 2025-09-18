@@ -2,11 +2,11 @@
 #define PMERGEME_HPP
 #include <vector>
 #include <deque>
-#include <array>
 #include <iostream>
 #include <sstream>
 #include <algorithm>
-
+#include <ctime>
+#include <iterator>
 
 class PmergeMe {
     private:
@@ -19,7 +19,9 @@ class PmergeMe {
         PmergeMe& operator=(const PmergeMe& other);
         ~PmergeMe();
         
-        void process(int argc, char* argv[]);
+        const std::vector<int>& getVector() const { return _vector; }
+        const std::deque<int>& getDeque() const { return _deque; }
+        void sort(int argc, char** input);
 };
 
 #endif
